@@ -1,0 +1,8 @@
+[package]
+name = "runner"
+version = "0.1.0"
+authors = ["TheSpiritXIII <thespiritxiii@gmail.com>"]
+
+[dependencies]
+sdl2 = "0.29"
+interface = { path = "../interface" }

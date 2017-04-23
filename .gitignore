@@ -1,0 +1,6 @@
+## General
+bin/
+
+## Rust
+target/
+**/*.rs.bk
