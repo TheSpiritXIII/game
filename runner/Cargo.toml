@@ -4,5 +4,13 @@ version = "0.1.0"
 authors = ["TheSpiritXIII <thespiritxiii@gmail.com>"]
 
 [dependencies]
-sdl2 = "0.29"
-interface = { path = "../interface" }
+chrono = "0.3"
+libloading = "0.4"
+notify = "4.0"
+sdl2 = " 0.30.0-beta"
+
+[dependencies.interface]
+path = "../interface"
+
+[dependencies.engine]
+path = "../engine"

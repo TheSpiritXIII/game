@@ -1,11 +1,10 @@
 [root]
-name = "game"
+name = "redist"
 version = "0.1.0"
 dependencies = [
+ "engine 0.1.0",
+ "game 0.1.0",
  "interface 0.1.0",
- "sdl2 0.30.0-beta (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_derive 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -17,6 +16,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "dtoa"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "engine"
+version = "0.1.0"
+dependencies = [
+ "interface 0.1.0",
+ "sdl2 0.30.0-beta (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "game"
+version = "0.1.0"
+dependencies = [
+ "interface 0.1.0",
+ "sdl2 0.30.0-beta (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "interface"

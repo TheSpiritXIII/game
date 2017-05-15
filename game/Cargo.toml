@@ -4,10 +4,10 @@ version = "0.1.0"
 authors = ["TheSpiritXIII <thespiritxiii@gmail.com>"]
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-sdl2 = "0.29"
+sdl2 = " 0.30.0-beta"
 serde = "1.0"
 serde_derive = "1.0"
 interface = { path = "../interface" }

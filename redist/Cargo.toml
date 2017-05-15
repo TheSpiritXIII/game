@@ -1,0 +1,16 @@
+[package]
+name = "redist"
+version = "0.1.0"
+authors = ["TheSpiritXIII <thespiritxiii@gmail.com>"]
+
+[profile.release]
+lto = true
+
+[dependencies.game]
+path = "../game"
+
+[dependencies.engine]
+path = "../engine"
+
+[dependencies.interface]
+path = "../interface"

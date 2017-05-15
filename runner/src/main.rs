@@ -1,98 +1,64 @@
-extern crate sdl2;
+extern crate chrono;
+extern crate libloading;
+extern crate notify;
 
+extern crate engine;
 extern crate interface;
 
-use sdl2::event::Event;
-use sdl2::keyboard::{KeyboardState, Keycode, Scancode};
-use sdl2::pixels::Color;
-use sdl2::render::Renderer;
+mod listener;
+mod util;
 
-struct Context<'a, 'b: 'a, 'c, 'd: 'c>
-{
-	renderer: &'a mut Renderer<'b>,
-	keyboard_state: &'c KeyboardState<'d>,
-}
+use interface::Runner;
 
-impl<'a, 'b, 'c, 'd> Context<'a, 'b, 'c, 'd>
-{
-	fn new(renderer: &'a mut Renderer<'b>, keyboard_state: &'c KeyboardState<'d>) -> Self
-	{
-		Self
-		{
-			renderer: renderer,
-			keyboard_state: keyboard_state,
-		}
-	}
-}
+use listener::GameListener;
 
 fn main_run() -> Result<(), String>
 {
-	let mut listener = interface::GameListener::new()?;
-
-	let sdl_context = sdl2::init().expect("Unable to initialize SDL2.");
-	let video_subsystem = sdl_context.video().expect("Unable to initialize SDL2 video.");
-	let window = video_subsystem.window("Platformer", 800, 600)
-		.opengl()
-		.build()
-		.expect("Unable to initialize SDL2 window.");
-
-	let mut renderer = window.renderer().build().expect("Unable to initialize SDL2 renderer.");
-	let mut event_pump = sdl_context.event_pump().expect("Unable to initialize SDL2 event pump.");
-
-	'running: loop
+	let mut engine = engine::GameEngine::create::<String>()?;
+	let mut listener = GameListener::new()?;
+	let mut key = [false; 256];
+	loop
 	{
-		let ctrl_pressed =
-		{
-			let key_state = event_pump.keyboard_state();
-			let ctrl_pressed_left = key_state.is_scancode_pressed(Scancode::LCtrl);
-			let ctrl_pressed_right = key_state.is_scancode_pressed(Scancode::RCtrl);
-			ctrl_pressed_left || ctrl_pressed_right
-		};
-		// for event in event_pump.poll_iter()
-		// {
-		// 	match event
-		// 	{
-		// 		Event::Quit {..} | Event::KeyDown { keycode: Some(Keycode::Escape), .. } =>
-		// 		{
-		// 			break 'running;
-		// 		},
-		// 		Event::KeyDown { keycode: Some(Keycode::R), .. } =>
-		// 		{
-		// 			if ctrl_pressed
-		// 			{
-		// 				println!("Requested restart");
-		// 				listener.reload(true)?;
-		// 			}
-		// 		},
-		// 		Event::KeyDown { keycode: Some(Keycode::W), .. } =>
-		// 		{
-		// 			if ctrl_pressed
-		// 			{
-		// 				listener.watch_toggle()?;
-		// 			}
-		// 		}
-		// 		_ => {}
-		// 	}
-		// }
-
 		listener.poll()?;
-
-		renderer.set_draw_color(Color::RGB(0, 0, 0));
-		renderer.clear();
-
-		let key_state = &event_pump.keyboard_state();
 		{
-				let mut context = Context
+			let callback = |c, enabled|
+			{
+				key[c as usize] = enabled;
+				if key[1]
 				{
-					renderer: &mut renderer,
-					keyboard_state: key_state,
-				};
-				listener.run(&mut context);
+					if key['R' as usize]
+					{
+						util::print_time();
+						println!("Requested restart.");
+						listener.reload(true).unwrap();
+					}
+					if key['W' as usize]
+					{
+						listener.watch_toggle().unwrap();
+					}
+					if key['P' as usize]
+					{
+						listener.pause_toggle();
+					}
+					if key['C' as usize]
+					{
+						listener.compatibility_toggle().unwrap();
+					}
+					if key['S' as usize]
+					{
+						listener.print_status();
+					}
+				}
+			};
+			if engine.run_events(callback)
+			{
+				break
+			}
 		}
-
-		renderer.present();
-
-		std::thread::sleep(std::time::Duration::new(0, 1_000_000_000 / 60));
+		if engine.run_game(&mut listener)
+		{
+			break
+		}
 	}
 	Ok(())
 }
@@ -101,7 +67,10 @@ fn main()
 {
 	while let Err(err) = main_run()
 	{
+		util::print_time();
 		println!("Error: {}", err);
-		println!("Restarting game.");
+		util::print_time();
+		println!("Restarting game due to error.");
 	}
+	println!("Hello");
 }
